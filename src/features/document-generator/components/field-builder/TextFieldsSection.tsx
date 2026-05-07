@@ -9,7 +9,14 @@ import {
   Trash2,
   Type,
 } from "lucide-react";
-import { Button, Dropdown, TextInput, Textarea } from "@/src/components/ui";
+import {
+  Button,
+  DateInput,
+  Dropdown,
+  NumberInput,
+  TextInput,
+  Textarea,
+} from "@/src/components/ui";
 import type {
   DocumentFieldSchemaValidation,
   TextReplacementField,
@@ -224,14 +231,40 @@ export function TextFieldsSection({
                       onUpdateTextField(field.id, { required: checked })
                     }
                   />
-                  <TextInput
-                    label="Default Value"
-                    name={`${field.id}-defaultValue`}
-                    onChange={handleTextInputChange(field.id, "defaultValue")}
-                    placeholder="Optional"
-                    type={field.type === "number" ? "number" : "text"}
-                    value={field.defaultValue ?? ""}
-                  />
+                  {field.type === "textarea" ? (
+                    <Textarea
+                      className="lg:col-span-2"
+                      label="Default Value"
+                      name={`${field.id}-defaultValue`}
+                      onChange={handleTextInputChange(field.id, "defaultValue")}
+                      placeholder="Optional"
+                      rows={3}
+                      value={field.defaultValue ?? ""}
+                    />
+                  ) : field.type === "date" ? (
+                    <DateInput
+                      label="Default Value"
+                      name={`${field.id}-defaultValue`}
+                      onChange={handleTextInputChange(field.id, "defaultValue")}
+                      value={field.defaultValue ?? ""}
+                    />
+                  ) : field.type === "number" ? (
+                    <NumberInput
+                      label="Default Value"
+                      name={`${field.id}-defaultValue`}
+                      onChange={handleTextInputChange(field.id, "defaultValue")}
+                      placeholder="Optional"
+                      value={field.defaultValue ?? ""}
+                    />
+                  ) : (
+                    <TextInput
+                      label="Default Value"
+                      name={`${field.id}-defaultValue`}
+                      onChange={handleTextInputChange(field.id, "defaultValue")}
+                      placeholder="Optional"
+                      value={field.defaultValue ?? ""}
+                    />
+                  )}
                   <Textarea
                     className="lg:col-span-2"
                     label="Help Text"

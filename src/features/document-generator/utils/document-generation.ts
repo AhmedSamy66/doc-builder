@@ -8,6 +8,7 @@ import type {
   DocumentFieldSchema,
   ImageReplacementField,
   ImageReplacementPayload,
+  TextReplacementPayload,
 } from "@/src/features/document-generator/types/document-schema";
 import type {
   FillValidation,
@@ -161,6 +162,10 @@ function getStoredImageFile(imageValue: ImageFileValue | undefined) {
   return imageValue?.file;
 }
 
+function hasTextReplacementValue(value: string | null | undefined): value is string {
+  return typeof value === "string" && value.trim().length > 0;
+}
+
 export function validateImageFile(
   imageValue: ImageFileValue | undefined,
   field: ImageReplacementField,
@@ -296,22 +301,35 @@ export function buildMultipartPayload({
   const selectedUploadedTemplates = selectedTemplates.filter(
     (template) => template.file,
   );
-  const textReplacements = sortByOrder(schema.textFields).map((field) => ({
-    fieldId: field.id,
-    label: field.label.trim(),
-    replacementTarget: field.replacementTarget.trim(),
-    type: field.type,
-    value: textValues[field.id] ?? "",
-  }));
-  const imageReplacementsMeta = sortByOrder(schema.imageFields)
-    .map((field): ImageReplacementPayload | undefined => {
-      const imageValue = imageFiles[field.id];
+  const textReplacements = sortByOrder(schema.textFields)
+    .map((field): TextReplacementPayload | undefined => {
+      const value = textValues[field.id];
 
-      if (!imageValue) {
+      if (!hasTextReplacementValue(value)) {
         return undefined;
       }
 
-      const file = imageValue.file;
+      return {
+        fieldId: field.id,
+        label: field.label.trim(),
+        replacementTarget: field.replacementTarget.trim(),
+        type: field.type,
+        value,
+      };
+    })
+    .filter(
+      (replacement): replacement is TextReplacementPayload =>
+        replacement !== undefined,
+    );
+  const imageReplacementsMeta = sortByOrder(schema.imageFields)
+    .map((field): ImageReplacementPayload | undefined => {
+      const imageValue = imageFiles[field.id];
+      const file = imageValue?.file;
+
+      if (!file) {
+        return undefined;
+      }
+
       const fileKey = `imageReplacement:${field.id}`;
 
       payload.append(fileKey, file);

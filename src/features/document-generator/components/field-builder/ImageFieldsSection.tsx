@@ -9,7 +9,7 @@ import {
   Plus,
   Trash2,
 } from "lucide-react";
-import { Button, TextInput } from "@/src/components/ui";
+import { Button, NumberInput, TextInput } from "@/src/components/ui";
 import { cn, fieldHelperClassName } from "@/src/components/ui/styles";
 import type {
   DocumentFieldSchemaValidation,
@@ -214,7 +214,7 @@ export function ImageFieldsSection({
                       onUpdateImageField(field.id, { required: checked })
                     }
                   />
-                  <TextInput
+                  <NumberInput
                     error={errors.maxSizeMb}
                     label="Max Size"
                     min={0.1}
@@ -225,10 +225,9 @@ export function ImageFieldsSection({
                       })
                     }
                     step={0.1}
-                    type="number"
                     value={String(field.maxSizeMb)}
                   />
-                  <TextInput
+                  <NumberInput
                     error={errors.widthCm}
                     label="Width (cm)"
                     min={0.1}
@@ -240,7 +239,6 @@ export function ImageFieldsSection({
                     }
                     placeholder="Optional"
                     step={0.1}
-                    type="number"
                     value={
                       field.widthCm === undefined ? "" : String(field.widthCm)
                     }

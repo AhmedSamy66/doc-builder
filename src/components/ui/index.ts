@@ -1,7 +1,9 @@
 export { Button } from "./Button";
 export { ConfirmationDialog } from "./ConfirmationDialog";
+export { DateInput } from "./DateInput";
 export { Dropdown, type DropdownOption } from "./Dropdown";
 export { ImageUpload } from "./ImageUpload";
+export { NumberInput } from "./NumberInput";
 export { PageHeader } from "./PageHeader";
 export { SectionHeader } from "./SectionHeader";
 export { Textarea } from "./Textarea";

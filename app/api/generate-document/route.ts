@@ -95,6 +95,10 @@ function readOptionalStringValue(record: Record<string, unknown>, key: string) {
   return typeof value === "string" ? value : undefined;
 }
 
+function hasTextReplacementValue(value: string | undefined): value is string {
+  return typeof value === "string" && value.trim().length > 0;
+}
+
 function readOptionalPositiveNumber(
   record: Record<string, unknown>,
   key: string,
@@ -595,8 +599,12 @@ function parseTextReplacements(
     const label = readStringValue(item, "label");
     const replacementTarget = readStringValue(item, "replacementTarget");
     const type = readStringValue(item, "type");
-    const value = readOptionalStringValue(item, "value") ?? "";
+    const value = readOptionalStringValue(item, "value");
     let textFieldType: TextReplacementFieldType | undefined;
+
+    if (!hasTextReplacementValue(value)) {
+      return;
+    }
 
     if (!fieldId || !label || !replacementTarget) {
       fieldErrors[`textReplacements.${index}`] =

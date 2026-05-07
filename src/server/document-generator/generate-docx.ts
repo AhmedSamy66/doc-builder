@@ -683,14 +683,29 @@ function formatTextReplacementValue(replacement: TextReplacementPayload) {
     : replacement.value;
 }
 
+function hasReplacementValue(value: string) {
+  return value.trim().length > 0;
+}
+
 function buildRenderContext(data: GenerateDocxData) {
-  const replacements: ReplacementOperation[] = data.textReplacements.map(
-    (replacement) => ({
-      label: replacement.label,
-      target: replacement.replacementTarget,
-      value: formatTextReplacementValue(replacement),
-    }),
-  );
+  const replacements: ReplacementOperation[] = data.textReplacements
+    .map((replacement): ReplacementOperation | undefined => {
+      const value = formatTextReplacementValue(replacement);
+
+      if (!hasReplacementValue(value)) {
+        return undefined;
+      }
+
+      return {
+        label: replacement.label,
+        target: replacement.replacementTarget,
+        value,
+      };
+    })
+    .filter(
+      (replacement): replacement is ReplacementOperation =>
+        replacement !== undefined,
+    );
   const imageDataByToken = new Map<string, ImageRenderData>();
   const renderData: Record<string, string> = {};
 

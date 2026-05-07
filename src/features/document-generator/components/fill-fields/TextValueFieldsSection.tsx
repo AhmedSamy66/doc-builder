@@ -1,8 +1,8 @@
 "use client";
 
 import type { ChangeEvent } from "react";
-import { AlignLeft, Type } from "lucide-react";
-import { TextInput, Textarea } from "@/src/components/ui";
+import { AlignLeft, CalendarDays, Hash, Type } from "lucide-react";
+import { DateInput, NumberInput, TextInput, Textarea } from "@/src/components/ui";
 import type {
   TextReplacementField,
 } from "@/src/features/document-generator/types/document-schema";
@@ -19,6 +19,14 @@ function getTextFieldIcon(type: TextReplacementField["type"]) {
 
   if (type === "textarea") {
     return <AlignLeft className={className} />;
+  }
+
+  if (type === "date") {
+    return <CalendarDays className={className} />;
+  }
+
+  if (type === "number") {
+    return <Hash className={className} />;
   }
 
   return <Type className={className} />;
@@ -47,35 +55,35 @@ export function TextValueFieldsSection({
         <h3 className="text-sm font-semibold text-slate-950">Text Inputs</h3>
       </div>
       <div className="grid gap-5 md:grid-cols-2">
-        {fields.map((field) =>
-          field.type === "textarea" ? (
-            <Textarea
-              className="md:col-span-2"
-              error={textErrors[field.id]}
-              helperText={field.helpText}
-              key={field.id}
-              label={field.label}
-              leadingIcon={getTextFieldIcon(field.type)}
-              name={field.id}
-              onChange={handleTextChange(field.id)}
-              required={field.required}
-              value={textValues[field.id] ?? ""}
-            />
-          ) : (
-            <TextInput
-              error={textErrors[field.id]}
-              helperText={field.helpText}
-              key={field.id}
-              label={field.label}
-              leadingIcon={getTextFieldIcon(field.type)}
-              name={field.id}
-              onChange={handleTextChange(field.id)}
-              required={field.required}
-              type={field.type}
-              value={textValues[field.id] ?? ""}
-            />
-          ),
-        )}
+        {fields.map((field) => {
+          const inputProps = {
+            error: textErrors[field.id],
+            helperText: field.helpText,
+            label: field.label,
+            leadingIcon: getTextFieldIcon(field.type),
+            name: field.id,
+            onChange: handleTextChange(field.id),
+            required: field.required,
+            value: textValues[field.id] ?? "",
+          };
+
+          switch (field.type) {
+            case "textarea":
+              return (
+                <Textarea
+                  {...inputProps}
+                  className="md:col-span-2"
+                  key={field.id}
+                />
+              );
+            case "date":
+              return <DateInput {...inputProps} key={field.id} />;
+            case "number":
+              return <NumberInput {...inputProps} key={field.id} />;
+            case "text":
+              return <TextInput {...inputProps} key={field.id} />;
+          }
+        })}
       </div>
     </div>
   );
